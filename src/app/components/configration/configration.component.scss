@@ -1,0 +1,96 @@
+.main-container{
+    width: 100%;
+    height: 99.8%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: centers;
+    
+}
+
+.left-side{
+    width: 58%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    
+}
+
+.right-side{
+    width: 40%;
+    height: 100%;
+    padding-left: 20px;
+    background: rgba(6, 6, 6, 0.4);
+    /* Glassy background color */
+    border-radius: 10px;
+    /* Optional: Add rounded corners */
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    /* Glassy shadow effect */
+    backdrop-filter: blur(10px);
+    /* Apply blur effect to simulate glass */
+    -webkit-backdrop-filter: blur(10px);
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+.Ordered_menu{
+    overflow: scroll;
+}
+
+.orderList{
+    width: 97%;
+    height: 98%;
+    background: rgba(6, 6, 6, 0.4);
+    /* Glassy background color */
+    border-radius: 10px;
+    /* Optional: Add rounded corners */
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    /* Glassy shadow effect */
+    backdrop-filter: blur(10px);
+    /* Apply blur effect to simulate glass */
+    -webkit-backdrop-filter: blur(10px);
+   
+}
+.order-main{
+    margin-top: 15px;
+    width: 95%;
+    height: 120px;
+    display: flex;
+    justify-content: space-around;
+ 
+    color: white;
+   
+  //  background: rgba(245, 153, 6, 0.4);
+    /* Glassy background color */
+    border-radius: 10px;
+    /* Optional: Add rounded corners */
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    /* Glassy shadow effect */
+    backdrop-filter: blur(10px);
+    /* Apply blur effect to simulate glass */
+    -webkit-backdrop-filter: blur(10px);
+    position: relative;
+    margin-left: 20px;
+    .left{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+    }
+    .right{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .button{
+        width: 100px;
+        height: 30px;
+    }
+}

@@ -1,0 +1,48 @@
+<div class="main-dashboard">
+  <div class="userInfo" style=" color: white;">
+    <mat-icon>account_circle</mat-icon>
+    <h3 >
+      Hi {{username}}</h3>
+      <button mat-raised-button style="margin-left: 20px;" color="warn"
+      (click)="logout()">Logout</button>
+  </div>
+ 
+  <div class="monthlyReport">Monthly Sales Report
+    <div class="valueContainer">
+    <div class="smallWegit">
+      <div class="valueWigits">
+        <p>Orders <br> <br>{{MonthlyReport.noOfOrders}}</p>
+      </div>
+      <div class="valueWigits">
+        <p>Total Earning <br> <br> {{MonthlyReport.totalEarning}}</p>
+      </div>
+      <div class="valueWigits">
+        <p>Average Earning <br> <br> {{MonthlyReport.AvgOrder}}</p>
+      </div>
+    </div>
+    <div class="bigWedgit">
+      <div class="chartbar"></div>
+    </div>
+  </div>
+  </div>
+  <div class="dailyReport">Daily Sales Report
+    <div class="valueContainer">
+      <div class="smallWegit">
+        <div class="valueWigits">
+          <p>Orders <br> <br> {{dailyReport.noOfOrders}}</p>
+        </div>
+        <div class="valueWigits">
+          <p>Total Earning <br> <br> {{dailyReport.totalEarning}}</p>
+        </div>
+        <div class="valueWigits">
+          <p>Average Earning <br> <br> {{dailyReport.AvgOrder}}</p>
+        </div>
+      </div>
+      <div class="bigWedgit">
+        <div class="linechart"></div>
+      </div>
+     
+      
+    </div>
+  </div>
+</div>

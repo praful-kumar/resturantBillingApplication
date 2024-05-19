@@ -1,0 +1,27 @@
+<mat-sidenav-container class="container" style="background-color: transparent;">
+    <mat-sidenav class="nav" #sidenav mode="push" [(opened)]="hideMenu" [@menuAnimation]="menuState">
+      
+      <mat-nav-list class="side-nav-lists">
+        <mat-list-item [routerLink]="['/dashboard']" routerLinkActive="active-link"><a >Dashboard</a></mat-list-item>
+        <mat-list-item [routerLink]="['/table-sale']" routerLinkActive="active-link"><a>Table Sale</a></mat-list-item>
+        <mat-list-item [routerLink]="['/configration']" routerLinkActive="active-link"><a>Configration</a></mat-list-item>
+        <mat-list-item><a href="">Setting</a> </mat-list-item>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content style="background-color: transparent;" @fadeInOut >
+        <ng-template [ngIf]="currentUrl=='/dashboard'">
+            <app-main-dashboard></app-main-dashboard>
+          </ng-template>
+        
+          <ng-template [ngIf]="currentUrl=='/table-sale'">
+            <app-table-view></app-table-view>
+          </ng-template>
+          <ng-template [ngIf]="currentUrl=='/configration'">
+            <app-configration></app-configration>
+          </ng-template>
+        
+        
+    </mat-sidenav-content>
+   
+    
+  </mat-sidenav-container>

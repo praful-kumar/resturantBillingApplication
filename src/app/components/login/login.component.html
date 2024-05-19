@@ -1,0 +1,43 @@
+<div class="background-element">
+  <div class="typedJs">
+    <ngx-typed-js [strings]="['Angular', 'Java Sping-Boot','Mongodb', 'Material-UI']"
+    [backDelay]="1000"
+     [loop]="true"
+      [typeSpeed]="100"
+      [showCursor]="false">
+      Developed using <span class="typing"></span>
+ </ngx-typed-js>
+  </div>
+  
+<mat-card class="right-card">
+  <mat-card-header>
+    <mat-card-title>Login</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="form" class="main-form">
+
+      <mat-form-field class="full-width">
+        <mat-label>Email</mat-label>
+        <input class="input" type="email" matInput formControlName="email" (input)="onEmailChange($event)" placeholder="Ex. pat@example.com">
+        <mat-error *ngIf="form.get('email')?.hasError('required') && (form.get('email')?.dirty || form.get('email')?.touched)">
+          Email is required.
+        </mat-error>
+        <mat-error *ngIf="form.get('email')?.hasError('email') && (form.get('email')?.dirty || form.get('email')?.touched)">
+          Please enter a valid email address.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" (input)="onPasswordChange($event)" placeholder="Enter your password">
+      </mat-form-field>
+      <button mat-raised-button style="width: 100px;" color="primary" (click)="login()">Login</button>
+    </form>
+    <p style="margin-top: 5px;">Don't have an account? <a routerLink="/signup">Sign Up</a></p>
+  </mat-card-content>
+  <mat-card *ngIf="errorMessage?.error" style="margin: 10px 10px 10px 10px;">
+    <mat-card-content style="width: 340px; color: rgb(206, 69, 69);">{{errorMessage?.error}}</mat-card-content>
+  </mat-card>
+</mat-card>
+</div>
+

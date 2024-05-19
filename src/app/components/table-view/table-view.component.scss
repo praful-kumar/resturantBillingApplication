@@ -1,0 +1,336 @@
+.right-card {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px;
+    z-index: 10;
+}
+
+.tables-container {
+    width: 99%;
+    height: 68%;
+    padding-left: 20px;
+    overflow: scroll;
+    background: rgba(6, 6, 6, 0.4);
+    /* Glassy background color */
+    border-radius: 10px;
+    /* Optional: Add rounded corners */
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    /* Glassy shadow effect */
+    backdrop-filter: blur(10px);
+    /* Apply blur effect to simulate glass */
+    -webkit-backdrop-filter: blur(10px);
+    /* For Safari */
+    //border: 1px solid rgba(255, 255, 255, 0.18);
+    /* Optional: Add border */
+
+}
+
+.table {
+    display: inline-block; /* Display tables inline */
+    vertical-align: top;
+    width: 140px;
+    height: 100px; 
+    margin: 15px;
+    background-color: rgb(254, 193, 79, 1);
+    border-radius: 8px;
+    cursor: pointer;
+    color: white;
+    font-size: medium;
+    text-align: center;
+    background-image: url(../../../assets/tablePic.avif);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+
+}
+
+
+
+.blurry-text {
+    background-color: rgba(5, 5, 5, 0.317);
+    /* Semi-transparent white background */
+    backdrop-filter: blur(5px);
+    /* Apply a blur effect to the background */
+    border-radius: 2px;
+
+}
+
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.9);
+        box-shadow: 0 0 0 0 rgb(254, 193, 79, 0.7);
+        ;
+    }
+
+    70% {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 12px rgb(254, 193, 79, 0.1);
+    }
+
+    100% {
+        transform: scale(0.9);
+        box-shadow: 0 0 0 0 rgb(254, 193, 79, 0.7);
+        ;
+    }
+}
+
+.table:hover {
+    animation: pulse 2s infinite;
+    transition: transform 0.5s ease-in-out;
+}
+
+/* table-styles.scss */
+
+.main-wraper {
+    width: 100%;
+    height: 99.5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+
+}
+
+.table-side {
+    width: 58%;
+    height: inherit;
+    position: relative;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: column;
+}
+
+.billing-side {
+    width: 38%;
+    height: 99%;
+    overflow: scroll;
+    // border: 1px solid black;
+    // background-color: aqua;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+.selected-item {
+    width: 570px;
+    height: 92%;
+    margin-top:70px;
+    // display: flex;
+    // flex-wrap: wrap;
+    // justify-content: space-around;
+    // text-align: center;
+    // flex-direction: row;
+    overflow: scroll;
+    background: rgba(255, 255, 255, 0.2);
+    /* Glassy background color */
+    border-radius: 10px;
+    /* Optional: Add rounded corners */
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    /* Glassy shadow effect */
+    backdrop-filter: blur(10px);
+    /* Apply blur effect to simulate glass */
+    -webkit-backdrop-filter: blur(10px);
+    /* For Safari */
+    //  border: 1px solid rgb(255, 255, 255); /* Optional: Add border */
+
+}
+
+.search-tab {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    flex-direction: row;
+}
+
+.Ordered_menu {
+    height: 550px;
+    overflow: scroll;
+}
+
+.billing-table{
+    // margin-top: 100px;
+    background: transparent;
+    backdrop-filter: blur(15px);
+}
+.actions-container{
+    width: 98%;
+    height: 26%;
+    padding: 10px;
+    background: rgba(6, 6, 6, 0.4);
+    /* Glassy background color */
+    border-radius: 10px;
+    /* Optional: Add rounded corners */
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    /* Glassy shadow effect */
+    backdrop-filter: blur(10px);
+    /* Apply blur effect to simulate glass */
+    display: flex;
+    justify-content: space-around;
+}
+
+.left-action-tab{
+    width: 49%;
+    height: 100%;
+    background-color: rgba(152, 151, 151, 0.671);
+    border-radius: 10px;
+    //padding: 5px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    h4{
+        margin: 0px;
+        font-weight: 400;
+    }
+}
+
+.right-action-tab{
+    width: 49%;
+    // height: 100%;
+    background-color: #e48c39ab;
+    border-radius: 10px;
+    // padding: 5px;
+    // padding-left: 20px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    h4{
+        margin: 0px;
+        font-weight: 400;
+    }
+    
+}
+
+ .read {
+    display: inline-block;
+    border-radius: 0.5rem;
+    width: 350px;
+    padding: 0.75rem 1.25rem;
+    text-align: center;
+    font-size: 0.875rem;
+    line-height: 1rem;
+    font-weight: 400;
+    outline: none;
+  }
+  
+    .kot{
+    background-color: rgba(59, 131, 246, 0.842);
+    color: rgba(255, 255, 255, 1);
+  }
+  .kot{
+   
+    color: rgba(255, 255, 255, 1);
+    display: inline-block;
+    border-radius: 0.5rem;
+    width: 250px;
+    padding: 0.75rem 1.25rem;
+    text-align: center;
+    font-size: 0.875rem;
+    line-height: 1rem;
+    font-weight: 400;
+    outline: none;
+  }
+
+
+  .group {
+    display: flex;
+    line-height: 28px;
+    align-items: center;
+    position: relative;
+    max-width: 200px;
+   }
+   
+   .inputs {
+    width: 200px;
+    height: 33px;
+    line-height: 25px;
+    padding: 0 1rem;
+    padding-left: 2.5rem;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    outline: none;
+    background-color: #f3f3f4;
+    color: #0d0c22;
+    transition: .3s ease;
+   }
+   
+   .inputs::placeholder {
+    color: #9e9ea7;
+   }
+   
+   .inputs:focus, inputs:hover {
+    outline: none;
+    border-color: rgba(76, 97, 234, 0.4);
+    background-color: #fff;
+    box-shadow: 0 0 0 4px rgba(133, 82, 222, 0.144);
+   }
+   
+   .icon {
+    position: absolute;
+    left: 1rem;
+    fill: #9e9ea7;
+    width: 1rem;
+    height: 1rem;
+   }
+   .pay-btn {
+    border:none;
+    background:#22b877;
+    line-height:2rem;
+    border-radius:5px;
+    font-size:17px;
+    font-size:1.1rem;
+    color:#fff;
+    cursor:pointer;
+    width:calc(100% - 50px);
+    -webkit-transition:all .2s ease;
+            transition:all .2s ease;
+  }
+
+  .pay-btn:hover {
+    background:#22a877;
+      color:#eee;
+    -webkit-transition:all .2s ease;
+            transition:all .2s ease;
+  }
+   
+   
+  .pos-menu {
+    font-family: Arial, sans-serif; /* Set font family */
+    font-size: 10pt; /* Set font size */
+    display: none;
+    border: .5px solid #0000;
+  }
+  
+  .pos-table {
+    width: 100%;
+    min-width: 50px; /* Fill the width of the container */
+    border-collapse: collapse; /* Collapse borders */
+  }
+  
+  .pos-table th,
+  .pos-table td {
+    border: .2px dashed #000; /* Add borders */
+    padding: 5px; /* Add padding */
+    text-align: left; /* Align text to left */
+  }
+  
+  .pos-total-amount,
+  .pos-discount {
+    text-align: right;
+    margin-top: 10px; /* Add margin between table and additional rows */
+    
+  }
+  
+  .pos-total-amount span,
+  .pos-discount span {
+    
+    font-weight: normal; /* Make total amount and discount text bold */
+  }
+  
