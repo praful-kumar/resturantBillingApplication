@@ -106,6 +106,7 @@ export class TableViewComponent {
      // Retrieving data
      this.tableDetails  = JSON.parse(localStorage.getItem('unbilled_data') || '[]');
       this.currentUserId = this.cookieService.get('currentUserId')
+      console.log("loggedInUser",this.currentUserId )
   }
 
   async getAllMenus(){
@@ -289,7 +290,7 @@ syncOrdertoDB(tableId :any){
     discount: this.discountPercent,
     amount: this.discountPrice
   }
-  this.backendService.storeOders(dbSchema,userId).then(response=>{
+  this.backendService.storeOders(dbSchema,this.currentUserId).then(response=>{
     console.log("test",response);
   })
   console.log("syncData",dbSchema)
