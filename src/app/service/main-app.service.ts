@@ -7,9 +7,10 @@ import {CookieService} from 'ngx-cookie-service'
   providedIn: 'root'
 })
 export class BackendService {
-  private baseUrl = 'http://localhost:9092';
+//   private baseUrl = 'http://localhost:9092';
+    private baseUrl =  'https://restaurant-billing-production.up.railway.app';
   userLocation: { latitude: number; longitude: number } | null = null;
-  
+
   isAuthenticated = false;
 
   constructor(private http: HttpClient, private cookieService:CookieService) {}
