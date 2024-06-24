@@ -212,7 +212,7 @@ export class TableViewComponent {
     }
     this.dataSource.data = this.getMenusforTable(this.selectedTable).menus
     // Storing data
-  //  localStorage.setItem('unbilled_data', JSON.stringify(this.tableDetails));
+   localStorage.setItem('unbilled_data', JSON.stringify(this.tableDetails));
 
     this.calcTotalPrice();
   }
@@ -264,7 +264,7 @@ checkout() {
       printDelay: 0
     };
     this.syncOrdertoDB(this.selectedTable);
-   // this.printService.print(printOptions);
+    this.printService.print(printOptions);
 
 
  } else {
@@ -276,7 +276,8 @@ checkout() {
 syncOrdertoDB(tableId :any){
   let syncData=  this.getMenusforTable(tableId);
   const now = Date.now();
-let userId = '663261866e6eab17243aa7f9';
+const userId = localStorage.getItem('currentUserId')
+//'663261866e6eab17243aa7f9';
   let dbSchema ={
     currentDateAndTime: this.datepipe.transform(now, 'dd/MM/yyyy h:mm a'),
     menu:syncData.menus,

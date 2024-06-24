@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, tap, throwError } from 'rxjs';
-
+import {CookieService} from 'ngx-cookie-service'
 
 @Injectable({
   providedIn: 'root'
@@ -12,14 +12,14 @@ export class BackendService {
   
   isAuthenticated = false;
 
-  constructor(private http: HttpClient,) {}
+  constructor(private http: HttpClient, private cookieService:CookieService) {}
 
   // login(data: any): Observable<any> {
   //   return this.http.post(`${this.baseUrl}/api/users/signin`, data);
   // }
   //for routes protection
   isLoggedIn() {
-    return  !!sessionStorage.getItem('authToken');
+    return  !!this.cookieService.get('authToken');
   }
 
   login(data: any): Observable<any> {
@@ -27,7 +27,7 @@ export class BackendService {
       tap(() => {
         // Set isAuthenticated to true upon successful login
         const authToken = 'exampleAuthToken'; // Replace this with your actual token
-        sessionStorage.setItem('authToken', authToken);
+        this.cookieService.set('authToken', authToken, { expires: 2, sameSite: 'Strict' });
       }),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {

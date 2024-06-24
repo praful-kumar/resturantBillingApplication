@@ -21,7 +21,7 @@
 
 .right-side{
     width: 40%;
-    height: 100%;
+    height: 99.9%;
     padding-left: 20px;
     background: rgba(6, 6, 6, 0.4);
     /* Glassy background color */
@@ -32,6 +32,7 @@
     backdrop-filter: blur(10px);
     /* Apply blur effect to simulate glass */
     -webkit-backdrop-filter: blur(10px);
+    
 }
 
 ::-webkit-scrollbar {
@@ -39,6 +40,7 @@
 }
 
 .Ordered_menu{
+    height: 65%;
     overflow: scroll;
 }
 

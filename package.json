@@ -22,6 +22,7 @@
     "@angular/router": "^16.2.0",
     "bcryptjs": "^2.4.3",
     "crypto-browserify": "^3.12.0",
+    "ngx-cookie-service": "^16.0.0",
     "ngx-print": "^1.5.1",
     "ngx-print-element": "^2.1.6",
     "ngx-typed-js": "^2.1.1",

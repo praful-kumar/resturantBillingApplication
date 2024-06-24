@@ -26,6 +26,7 @@ import {MatSelectModule} from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { ConfigrationComponent } from './components/configration/configration.component';
 import { NgxPrintModule } from 'ngx-print';
+import {CookieService} from 'ngx-cookie-service'
 
 
 @NgModule({
@@ -63,7 +64,7 @@ import { NgxPrintModule } from 'ngx-print';
     NgxPrintModule,
     
   ],
-  providers: [DatePipe],
+  providers: [DatePipe,CookieService],
   bootstrap: [AppComponent]
 })
 

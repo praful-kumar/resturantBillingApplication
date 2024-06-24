@@ -5,6 +5,7 @@ import { BackendService } from '../../service/main-app.service';
 import { Router } from '@angular/router';
 import { SharedService } from '../../service/shared-data.service';
 import {compareSync} from 'bcryptjs';
+import {CookieService} from 'ngx-cookie-service'
 
 @Component({
   selector: 'app-login',
@@ -23,6 +24,7 @@ export class LoginComponent {
   constructor(private backendService: BackendService,
      private formBuilder: FormBuilder,private router: Router,
      private sharedService:SharedService,
+     private cookieService:CookieService,
      ) {
     this.createForm();
   }
@@ -56,12 +58,12 @@ export class LoginComponent {
     this.backendService.login(userData)
       .subscribe(
         response => {
-
+                    console.log("responseUser",response)
           // Compare the hashed password from the server with the password entered by the user
           const isPasswordValid = compareSync(this.password, response.hashedPassword);
           if (isPasswordValid) {
             // Save user details in localStorage or session storage
-            localStorage.setItem('currentUser', JSON.stringify(response.user));
+            this.cookieService.set('currentUserId', response.Id,{expires:1,sameSite:'Strict'});
              // Redirect or perform other actions
           this.router.navigate(['/dashboard']);
           this.getLocation();

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { SharedService } from '../../service/shared-data.service';
-
+import {CookieService} from 'ngx-cookie-service'
 
 
 @Component({
@@ -9,7 +9,7 @@ import { SharedService } from '../../service/shared-data.service';
   styleUrls: ['./main-dashboard.component.scss']
 })
 export class MainDashboardComponent {
-  constructor(private sharedService:SharedService,){}
+  constructor(private sharedService:SharedService, private cookieService:CookieService){}
   username:any;
   MonthlyReport:any={
     noOfOrders:250,
@@ -50,6 +50,8 @@ export class MainDashboardComponent {
   logout() {
     sessionStorage.clear();
     location.reload();
+    localStorage.clear();
+    this.cookieService.deleteAll();
   }
  
 }
