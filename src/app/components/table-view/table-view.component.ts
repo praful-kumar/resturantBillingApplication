@@ -9,6 +9,7 @@ import { FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { DatePipe } from '@angular/common';
+import {CookieService} from 'ngx-cookie-service'
 
 @Component({
   selector: 'app-table-view',
@@ -22,9 +23,9 @@ export class TableViewComponent {
   searchControl = new FormControl();
   filteredSuggestions: Observable<string[]>;
   constructor(private backendService: BackendService, private router: Router, private datepipe :DatePipe,
-    //private sharedService:SharedService,public print: NgxPrintElementService 
-    private printService: NgxPrintService, private el: ElementRef,
-  
+    //private sharedService:SharedService,public print: NgxPrintElementService
+    private printService: NgxPrintService, private el: ElementRef,private cookieService:CookieService
+
   ) {
     this.filteredSuggestions = this.searchControl.valueChanges.pipe(
       startWith(''),
@@ -99,19 +100,20 @@ export class TableViewComponent {
   totalAmount:number = 0;
   discountPercent:any;
   discountPrice:number = 0;
+  currentUserId:any;
   ngOnInit() {
      this.getAllMenus();
      // Retrieving data
      this.tableDetails  = JSON.parse(localStorage.getItem('unbilled_data') || '[]');
-
+      this.currentUserId = this.cookieService.get('currentUserId')
   }
 
   async getAllMenus(){
    await this.backendService.getMenus().then(data => {
       // console.log(data);
       this.menus = data // Process the received data here
-    }); 
-    console.log(this.menus); 
+    });
+    console.log(this.menus);
   }
 
   back(e: any) {
@@ -131,7 +133,7 @@ export class TableViewComponent {
     console.log(' this.table_Details', this.tableDetails);
     this.discountPercent = '';
     this.calcTotalPrice();
-    
+
   }
   onKey(e: any) {
     this.filteredMenus = this._filterSuggestions(e.value)
@@ -163,7 +165,7 @@ export class TableViewComponent {
       this.filteredMenus = [];
     }
   }
- 
+
 
 
   removeItem(item: any) {
@@ -178,7 +180,7 @@ export class TableViewComponent {
     }
 }
 
- 
+
   tableHandler(item: any) {
     const tableIndex = this.tableDetails.findIndex(table => table.table_id == this.selectedTable);
     if (tableIndex !== -1) {
@@ -229,9 +231,9 @@ export class TableViewComponent {
       this.totalAmount = this.dataSource.data.reduce((accumulator, currentItem) => accumulator + currentItem.totalPrice, 0);
       console.log("totalP", this.totalAmount);
       this.discountPrice = this.totalAmount;
-      
+
     }
-   
+
 }
 async applyDiscount(e:any){
 this.discountPercent = e.value;
@@ -276,8 +278,10 @@ checkout() {
 syncOrdertoDB(tableId :any){
   let syncData=  this.getMenusforTable(tableId);
   const now = Date.now();
-const userId = localStorage.getItem('currentUserId')
+
+// const userId = localStorage.getItem('currentUserId')
 //'663261866e6eab17243aa7f9';
+  const userId = this.currentUserId;
   let dbSchema ={
     currentDateAndTime: this.datepipe.transform(now, 'dd/MM/yyyy h:mm a'),
     menu:syncData.menus,
