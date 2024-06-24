@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import {BackendService} from '../../service/main-app.service'
 import { MatTableDataSource } from '@angular/material/table';
+import {CookieService} from 'ngx-cookie-service'
 
 @Component({
   selector: 'app-configration',
@@ -10,7 +11,7 @@ import { MatTableDataSource } from '@angular/material/table';
 })
 export class ConfigrationComponent {
 
-  constructor( private router: Router, private backendService: BackendService) {}
+  constructor( private router: Router, private backendService: BackendService,private cookieService:CookieService) {}
   quantity: number = 0;
   menu:any={
     id:'',
@@ -94,11 +95,13 @@ export class ConfigrationComponent {
   ]
 
   ordersData:any;
-  
+  currentUserId:any;
   ngOnInit() {
     this.getAllmenus();
     this.getAllOrders();
 
+  this.currentUserId = this.cookieService.get('currentUserId')
+      console.log("loggedInUser",this.currentUserId )
   }
 
   async getAllmenus(){
@@ -129,7 +132,7 @@ export class ConfigrationComponent {
 
   addMenu(searchInput: any, quantityInput: any) {
     this.menu.id =this.nextMenuId ? this.nextMenuId : 1 ;
-    const userId= '663261866e6eab17243aa7f9';
+    const userId= this.currentUserId;
     this.backendService.setNewMenu(userId,this.menu)
     .then(response => {
       console.log('Menu added successfully!', response);
