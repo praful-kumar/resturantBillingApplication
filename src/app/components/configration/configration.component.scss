@@ -96,3 +96,10 @@
         height: 30px;
     }
 }
+
+.mb-flex{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 5px;
+}

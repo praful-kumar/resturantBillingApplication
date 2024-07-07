@@ -13,7 +13,7 @@
 
                 <div class="left">
                       <!-- Display order details -->
-                        <p>Order ID: {{ i+1 }}</p>
+                        <p>Order ID: {{ ordersData.length - i }}</p>
                         <p>Order-table:{{order.tableId}}</p>
                         <p>Discount %: {{order.discount}} </p>
                 </div>
@@ -21,15 +21,57 @@
                 <div class="right">
                     <p>Date & Time: {{ order.currentDateAndTime }}</p>
                     <p>Amount: {{order.amount}}</p>
-                    <button class="button">Show menu</button>
+                    <button class="button" (click)="showMenu(order.tableId,order.amount ,i)">Show menu</button>
                 </div>
                
              
 
                 <!-- Add other order fields as necessary -->
               </div>
+              
 
         </div>
+        <mat-card *ngIf="ordersDetails.showOrder" style="width: 90%; position: absolute;"> 
+            <mat-card-header class="mb-flex">
+                <h2>Ordered Item </h2> 
+                <mat-icon (click)="closeTab()">clear</mat-icon>
+            </mat-card-header>
+            <mat-card-content>
+                <table mat-table [dataSource]="ordersDetails.orderMenu">
+
+                    <!-- ID Column -->
+                <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef> M.ID </th>
+                    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                </ng-container>
+    
+                <!-- Name Column -->
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef> Name </th>
+                    <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+                </ng-container>
+                
+                <!-- Price Column -->
+                <ng-container matColumnDef="price">
+                    <th mat-header-cell *matHeaderCellDef> Unit Price </th>
+                    <td mat-cell *matCellDef="let element"> {{element.price}} </td>
+                </ng-container>
+    
+                
+                <ng-container matColumnDef="total">
+                    <th mat-header-cell *matHeaderCellDef> Total</th>
+                    <td mat-cell *matCellDef="let element">{{element.totalPrice}}</td>
+                </ng-container>
+
+
+                    <tr mat-header-row *matHeaderRowDef="displayedMenuColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedMenuColumns;"></tr>
+                  </table>
+                
+            </mat-card-content>
+        </mat-card>
+
+        
 
     </div>
     <div class="right-side">

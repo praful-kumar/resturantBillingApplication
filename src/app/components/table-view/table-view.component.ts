@@ -9,7 +9,7 @@ import { FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { DatePipe } from '@angular/common';
-import {CookieService} from 'ngx-cookie-service'
+import { CookieService } from 'ngx-cookie-service'
 
 @Component({
   selector: 'app-table-view',
@@ -22,9 +22,9 @@ export class TableViewComponent {
 
   searchControl = new FormControl();
   filteredSuggestions: Observable<string[]>;
-  constructor(private backendService: BackendService, private router: Router, private datepipe :DatePipe,
+  constructor(private backendService: BackendService, private router: Router, private datepipe: DatePipe,
     //private sharedService:SharedService,public print: NgxPrintElementService
-    private printService: NgxPrintService, private el: ElementRef,private cookieService:CookieService
+    private printService: NgxPrintService, private el: ElementRef, private cookieService: CookieService
 
   ) {
     this.filteredSuggestions = this.searchControl.valueChanges.pipe(
@@ -36,7 +36,7 @@ export class TableViewComponent {
 
   selected = "Option 2"
   suggestion: string[] = ['Apple', 'Banana', 'Orange', 'Mango'];
-  menus:any[]= []
+  menus: any[] = []
   // menus: any[] = [
   //   { id: 1, name: 'Butter Chicken', price: 10.99 },
   //   { id: 2, name: 'Palak Paneer', price: 9.99 },
@@ -96,21 +96,21 @@ export class TableViewComponent {
   selectedTable: any;
   quantity: number = 0;
   tableDetails: any[] = []
-  mainMenu:any;
-  totalAmount:number = 0;
-  discountPercent:any;
-  discountPrice:number = 0;
-  currentUserId:any;
+  mainMenu: any;
+  totalAmount: number = 0;
+  discountPercent: any;
+  discountPrice: number = 0;
+  currentUserId: any;
   ngOnInit() {
-     this.getAllMenus();
-     // Retrieving data
-     this.tableDetails  = JSON.parse(localStorage.getItem('unbilled_data') || '[]');
-      this.currentUserId = this.cookieService.get('currentUserId')
-      console.log("loggedInUser",this.currentUserId )
+    this.getAllMenus();
+    // Retrieving data
+    this.tableDetails = JSON.parse(localStorage.getItem('unbilled_data') || '[]');
+    this.currentUserId = this.cookieService.get('currentUserId')
+    console.log("loggedInUser", this.currentUserId)
   }
 
-  async getAllMenus(){
-   await this.backendService.getMenus().then(data => {
+  async getAllMenus() {
+    await this.backendService.getMenus().then(data => {
       // console.log(data);
       this.menus = data // Process the received data here
     });
@@ -179,26 +179,26 @@ export class TableViewComponent {
         this.dataSource.data = this.dataSource.data.filter((dataItem: any) => dataItem.id !== item.id); // Remove item from dataSource
       }
     }
-}
+  }
 
 
   tableHandler(item: any) {
     const tableIndex = this.tableDetails.findIndex(table => table.table_id == this.selectedTable);
     if (tableIndex !== -1) {
       const existingItem = this.tableDetails[tableIndex].menus.find((i: any) => i.id === item.id);
-      if (existingItem && this.tableDetails[tableIndex].table_id== this.selectedTable) {
-        console.log(existingItem,'existingItem')
+      if (existingItem && this.tableDetails[tableIndex].table_id == this.selectedTable) {
+        console.log(existingItem, 'existingItem')
         existingItem.quantity += this.quantity;
         existingItem.totalPrice = parseFloat((existingItem.totalPrice + (item.price * this.quantity)).toFixed(2));
       } else {
-        this.addNewItemToTable(tableIndex, item,tableIndex);
+        this.addNewItemToTable(tableIndex, item, tableIndex);
       }
     } else {
       this.addNewItemToTable(-1, item, tableIndex);
     }
   }
 
-  addNewItemToTable(index: number, newitem: any,tableIndex:any) {
+  addNewItemToTable(index: number, newitem: any, tableIndex: any) {
     const item = JSON.parse(JSON.stringify(newitem));
     item.quantity = this.quantity;
     item.totalPrice = parseFloat((item.price * this.quantity).toFixed(2));
@@ -207,15 +207,15 @@ export class TableViewComponent {
       this.tableDetails[index].menus.push(item);
       // this.dataSource.data.push(item);
       // this.dataSource.data = [...this.dataSource.data ];
-     // this.dataSource.data = this.getMenusforTable(this.selectedTable).menus
+      // this.dataSource.data = this.getMenusforTable(this.selectedTable).menus
     } else {
       this.tableDetails.push({ 'table_id': this.selectedTable, 'menus': [item] });
       // this.dataSource.data = [...this.dataSource.data,item ];
-     // this.dataSource.data = this.getMenusforTable(this.selectedTable).menus
+      // this.dataSource.data = this.getMenusforTable(this.selectedTable).menus
     }
     this.dataSource.data = this.getMenusforTable(this.selectedTable).menus
     // Storing data
-   localStorage.setItem('unbilled_data', JSON.stringify(this.tableDetails));
+    localStorage.setItem('unbilled_data', JSON.stringify(this.tableDetails));
 
     this.calcTotalPrice();
   }
@@ -228,73 +228,82 @@ export class TableViewComponent {
     return this.tableDetails.some(obj => obj.table_id === tableId);
   }
   calcTotalPrice() {
-    if(this.dataSource.data){
+    if (this.dataSource.data) {
       this.totalAmount = this.dataSource.data.reduce((accumulator, currentItem) => accumulator + currentItem.totalPrice, 0);
       console.log("totalP", this.totalAmount);
       this.discountPrice = this.totalAmount;
 
     }
 
-}
-async applyDiscount(e:any){
-this.discountPercent = e.value;
-this.discountPrice = await this.calcDis(e.value);
-}
- async calcDis(discountPercent: number): Promise<number> {
-  // Calculate the discount amount
-  const discountAmount = (this.totalAmount * discountPercent) / 100;
-
-  // Subtract the discount amount from the total amount to get the discounted price
-  const discountPrice = this.totalAmount - discountAmount;
-
-  console.log("Discounted price:", discountPrice);
-  return discountPrice;
-}
-
-checkout() {
-
-  const printContent = this.el.nativeElement.innerHTML;
-  const iframe = document.getElementById('menuTable');
-  if (iframe && this.totalAmount > 0) {
-    const printOptions: PrintOptions = {
-      printSectionId: 'menuTable',
-      printTitle: 'Standarded 52 Cafe & Restro',
-      useExistingCss: true,
-      bodyClass: 'theme-dark',
-      openNewTab: false,
-      previewOnly: false,
-      closeWindow: false,
-      printDelay: 0
-    };
-    this.syncOrdertoDB(this.selectedTable);
-    this.printService.print(printOptions);
-
-
- } else {
-  alert("Please select table first, total amount should be graeter then 0");
-    console.error('Element with ID "menuTable" not found');
- }
-}
-
-syncOrdertoDB(tableId :any){
-  let syncData=  this.getMenusforTable(tableId);
-  const now = Date.now();
-
-// const userId = localStorage.getItem('currentUserId')
-//'663261866e6eab17243aa7f9';
-  const userId = this.currentUserId;
-  let dbSchema ={
-    currentDateAndTime: this.datepipe.transform(now, 'dd/MM/yyyy h:mm a'),
-    menu:syncData.menus,
-    tableId:syncData.table_id,
-    discount: this.discountPercent,
-    amount: this.discountPrice
   }
-  this.backendService.storeOders(dbSchema,this.currentUserId).then(response=>{
-    console.log("test",response);
-  })
-  console.log("syncData",dbSchema)
-}
+  async applyDiscount(e: any) {
+    this.discountPercent = e.value;
+    this.discountPrice = await this.calcDis(e.value);
+  }
+  async calcDis(discountPercent: number): Promise<number> {
+    // Calculate the discount amount
+    const discountAmount = (this.totalAmount * discountPercent) / 100;
+
+    // Subtract the discount amount from the total amount to get the discounted price
+    const discountPrice = this.totalAmount - discountAmount;
+
+    console.log("Discounted price:", discountPrice);
+    return discountPrice;
+  }
+
+  checkout() {
+    const printContent = this.el.nativeElement.innerHTML;
+    const iframe = document.getElementById('menuTable');
+    if (iframe && this.totalAmount > 0) {
+      const printOptions: PrintOptions = {
+        printSectionId: 'menuTable',
+        printTitle: 'Standarded 52 Cafe & Restro',
+        useExistingCss: true,
+        bodyClass: 'theme-dark',
+        openNewTab: false,
+        previewOnly: false,
+        closeWindow: false,
+        printDelay: 0
+      };
+      this.syncOrdertoDB(this.selectedTable);
+      this.printService.print(printOptions);
+      this.discountPrice = 0;
+      this.discountPercent = '';
+      const tableIndex = this.tableDetails.findIndex(table => table.table_id == this.selectedTable);
+      console.log('tableIndex', tableIndex);
+      this.tableDetails.splice(tableIndex, 1)
+      console.log('tableData', this.tableDetails);
+      this.dataSource.data = [];
+      this.totalAmount = 0;
+      localStorage.setItem('unbilled_data', JSON.stringify(this.tableDetails));
+
+
+
+    } else {
+      alert("Please select table first, total amount should be graeter then 0");
+      console.error('Element with ID "menuTable" not found');
+    }
+  }
+
+  syncOrdertoDB(tableId: any) {
+    let syncData = this.getMenusforTable(tableId);
+    const now = Date.now();
+
+    // const userId = localStorage.getItem('currentUserId')
+    //'663261866e6eab17243aa7f9';
+    const userId = this.currentUserId;
+    let dbSchema = {
+      currentDateAndTime: this.datepipe.transform(now, 'dd/MM/yyyy h:mm a'),
+      menu: syncData.menus,
+      tableId: syncData.table_id,
+      discount: this.discountPercent,
+      amount: this.discountPrice
+    }
+    this.backendService.storeOders(dbSchema, this.currentUserId).then(response => {
+      console.log("test", response);
+    })
+    console.log("syncData", dbSchema)
+  }
 
 
 }
