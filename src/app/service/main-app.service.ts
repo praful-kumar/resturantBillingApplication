@@ -7,8 +7,8 @@ import {CookieService} from 'ngx-cookie-service'
   providedIn: 'root'
 })
 export class BackendService {
-  //  private baseUrl = 'http://localhost:9092';
-    private baseUrl =  'https://restaurant-billing-production.up.railway.app';
+    private baseUrl = 'http://localhost:9092';
+    // private baseUrl =  'https://restaurant-billing-production.up.railway.app';
   userLocation: { latitude: number; longitude: number } | null = null;
 
   isAuthenticated = false;
@@ -70,9 +70,18 @@ export class BackendService {
   }
 
   async getMenus(): Promise<any> {
-    console.log("best")
     return await this.http.get(`${this.baseUrl}/api/menu/getAllMenu`).toPromise();
   }
+
+  async getMenusByUser(userId:any): Promise<any> {
+    return await this.http.get(`${this.baseUrl}/api/menu/user/${userId}`).toPromise();
+  }
+
+  async getOrderByUser(userId:any): Promise<any> {
+    return await this.http.get(`${this.baseUrl}/api/orders/getOrders/user/${userId}`).toPromise();
+  }
+
+
 
   async storeOders(orderDetails:any, userId:any):Promise<any> {
 

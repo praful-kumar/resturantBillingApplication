@@ -3,17 +3,51 @@
     <button mat-raised-button style="width: 100px; top: 20px; right: 50px; z-index: 2;  position: absolute;" color="warn"
     (click)="back('dashboard')">Back</button>
     <div class="left-side">
-        <mat-card style="margin: 10px 10px 10px 10px; background-color: #00000000; width: 95%;">
-            <mat-card-content
+        <mat-card class="mat-cards">
+
+            <!-- <mat-card-content
                 style="text-align:center; font-size: 15px; font-family: Arial, Helvetica, sans-serif; color: white;">
-                 Orders </mat-card-content>
+                 Orders </mat-card-content> -->
+
+                 <mat-card-header class="">
+                    <h2>Ordered Item </h2> 
+                </mat-card-header>
+
+                 <mat-card-content>
+                    <!-- <div class="orderList"> -->
+                        <div class="order-main" *ngFor="let order of ordersData; let i = index">
+
+                        <div class="left">
+                              <!-- Display order details -->
+                                <p>Order ID: {{ ordersData.length - i }}</p>
+                                <p>Order-table:{{order.tableId}}</p>
+                                <p>Discount %: {{order.discount}} </p>
+                        </div>
+        
+                        <div class="right">
+                            <p>Date & Time: {{ order.currentDateAndTime }}</p>
+                            <p>Amount: {{order.amount}}</p>
+                            <button class="button" (click)="showMenu(order.tableId,order.amount ,i)">Show menu</button>
+                        </div>
+                       
+                     
+        
+                        <!-- Add other order fields as necessary -->
+                      </div>
+                    <!-- </div> -->
+
+                 </mat-card-content>
+                 <mat-card-footer>
+                    <mat-paginator  [length]="ordersData.length" [pageSize]="5" [pageSizeOptions]="[5, 8, 10]" aria-label="Select page">
+                    </mat-paginator>
+                 </mat-card-footer>
         </mat-card>
-        <div class="orderList">
+        <!-- <div class="orderList">
             <div class="order-main" *ngFor="let order of ordersData; let i = index">
 
-                <div class="left">
+                <div class="left"> -->
                       <!-- Display order details -->
-                        <p>Order ID: {{ ordersData.length - i }}</p>
+                        <!-- <p>Order ID: {{ ordersData.length - i }}</p>
                         <p>Order-table:{{order.tableId}}</p>
                         <p>Discount %: {{order.discount}} </p>
                 </div>
@@ -23,14 +57,14 @@
                     <p>Amount: {{order.amount}}</p>
                     <button class="button" (click)="showMenu(order.tableId,order.amount ,i)">Show menu</button>
                 </div>
-               
+                -->
              
 
                 <!-- Add other order fields as necessary -->
-              </div>
+              <!-- </div>
               
 
-        </div>
+        </div> -->
         <mat-card *ngIf="ordersDetails.showOrder" style="width: 90%; position: absolute;"> 
             <mat-card-header class="mb-flex">
                 <h2>Ordered Item </h2> 

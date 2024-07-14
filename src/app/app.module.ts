@@ -26,7 +26,8 @@ import {MatSelectModule} from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { ConfigrationComponent } from './components/configration/configration.component';
 import { NgxPrintModule } from 'ngx-print';
-import {CookieService} from 'ngx-cookie-service'
+import {CookieService} from 'ngx-cookie-service';
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 
 @NgModule({
@@ -62,6 +63,7 @@ import {CookieService} from 'ngx-cookie-service'
     MatAutocompleteModule,
     MatTableModule,
     NgxPrintModule,
+    MatPaginatorModule
     
   ],
   providers: [DatePipe,CookieService],

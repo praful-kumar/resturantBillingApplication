@@ -63,8 +63,8 @@ export class LoginComponent {
           const isPasswordValid = compareSync(this.password, response.hashedPassword);
           if (isPasswordValid) {
             // Save user details in localStorage or session storage
-
-            this.cookieService.set('currentUserId', response.email,{expires:1,sameSite:'Strict'});
+            delete response.hashedPassword;
+            this.cookieService.set('currentUserId', JSON.stringify(response),{expires:1,sameSite:'Strict'});
              // Redirect or perform other actions
           this.router.navigate(['/dashboard']);
           this.getLocation();

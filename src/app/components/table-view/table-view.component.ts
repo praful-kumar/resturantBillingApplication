@@ -100,21 +100,34 @@ export class TableViewComponent {
   totalAmount: number = 0;
   discountPercent: any;
   discountPrice: number = 0;
-  currentUserId: any;
+  currentUser: any;
   ngOnInit() {
-    this.getAllMenus();
     // Retrieving data
     this.tableDetails = JSON.parse(localStorage.getItem('unbilled_data') || '[]');
-    this.currentUserId = this.cookieService.get('currentUserId')
-    console.log("loggedInUser", this.currentUserId)
+    this.currentUser = JSON.parse(this.cookieService.get('currentUserId'));
+    console.log("loggedInUser", this.currentUser);
+    this.getAllMenus();
   }
 
   async getAllMenus() {
-    await this.backendService.getMenus().then(data => {
-      // console.log(data);
-      this.menus = data // Process the received data here
+    await this.backendService.getMenusByUser(this.currentUser.Id).then(data => {
+      // Process the received data here
+      try{
+        if(data.length > 0){          
+            data.forEach((e:any, i:any) => {
+              e.id = i+1;
+              this.menus.push(e);
+            });
+         // this.menus = data 
+          console.log('specificData', data)
+        }
+        else{
+          throw Error
+        }
+      }catch{
+        alert("Please Add some menu before billing")
+      }
     });
-    console.log(this.menus);
   }
 
   back(e: any) {
@@ -291,7 +304,7 @@ export class TableViewComponent {
 
     // const userId = localStorage.getItem('currentUserId')
     //'663261866e6eab17243aa7f9';
-    const userId = this.currentUserId;
+    // const userId = this.currentUser.Id;
     let dbSchema = {
       currentDateAndTime: this.datepipe.transform(now, 'dd/MM/yyyy h:mm a'),
       menu: syncData.menus,
@@ -299,7 +312,7 @@ export class TableViewComponent {
       discount: this.discountPercent,
       amount: this.discountPrice
     }
-    this.backendService.storeOders(dbSchema, this.currentUserId).then(response => {
+    this.backendService.storeOders(dbSchema, this.currentUser.Id).then(response => {
       console.log("test", response);
     })
     console.log("syncData", dbSchema)

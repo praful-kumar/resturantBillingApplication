@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { BackendService } from '../../service/main-app.service'
 import { MatTableDataSource } from '@angular/material/table';
 import { CookieService } from 'ngx-cookie-service'
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-configration',
@@ -13,9 +14,10 @@ import { MatDialog } from '@angular/material/dialog';
 export class ConfigrationComponent {
 
   constructor(private router: Router, private backendService: BackendService, private cookieService: CookieService, private dialog: MatDialog) { }
+  @ViewChild(MatPaginator) paginator !: MatPaginator;
   quantity: number = 0;
   menu: any = {
-    id: '',
+  //  id: '',
     name: '',
     price: ''
   }
@@ -23,15 +25,16 @@ export class ConfigrationComponent {
   menuName: any;
   displayedColumns: string[] = ['id', 'name', 'price', 'action'];
   displayedMenuColumns: string[] = ['id', 'name', 'price', 'total'];
-  
+
   dataSource = new MatTableDataSource<any>(this.allMenuList);
   // showSelectedTableMenu: any[] = [];
-  
-  ordersDetails:any={
-    tableId:'',
-    totalAmount:'',
-    showOrder:'',
-    orderMenu:[]
+
+
+  ordersDetails: any = {
+    tableId: '',
+    totalAmount: '',
+    showOrder: '',
+    orderMenu: []
 
   }
 
@@ -111,28 +114,55 @@ export class ConfigrationComponent {
   ]
 
   ordersData: any;
-  currentUserId: any;
-  orderLength:any;
+  currentUser: any;
+  orderLength: any;
 
- 
+
   ngOnInit() {
+   
+
+    this.currentUser = JSON.parse(this.cookieService.get('currentUserId'));
+    console.log("loggedInUser", this.currentUser.Id)
+    this.ordersData = new MatTableDataSource<any>(this.ordersData);
+    this.ordersData.paginator = this.paginator;
     this.getAllmenus();
     this.getAllOrders();
-
-    this.currentUserId = this.cookieService.get('currentUserId')
-    console.log("loggedInUser", this.currentUserId)
+   
   }
 
   async getAllmenus() {
-    await this.backendService.getMenus().then(data => {
-      this.dataSource.data = data;
-      this.nextMenuId = Number(data[data.length - 1].id) + 1
-      console.log("test", this.allMenuList)
-    });
+    // await this.backendService.getMenus().then(data => {
+    //   this.dataSource.data = data;
+    //   this.nextMenuId = Number(data[data.length - 1].id) + 1
+    //   console.log("test", this.allMenuList)
+    // });
+    await this.backendService.getMenusByUser(this.currentUser.Id).then((data => {
+     // this.dataSource.data = data;
+      try{
+        const temp:any[] =[]
+        if(data.length > 0){
+          data.forEach((e:any, i:any) => {
+            e.id = i+1;
+            temp.push(e);
+          });
+          this.dataSource.data = temp;
+          this.nextMenuId = Number(data[data.length - 1].id) + 1
+          console.log('specificData', data)
+        }
+        else{
+          throw Error
+        }
+      }catch{
+        alert("No Menu added")
+      }
+      
+   
+    }
+    ))
   }
 
   async getAllOrders() {
-    await this.backendService.getOrders().then(data => {
+    await this.backendService.getOrderByUser(this.currentUser.Id).then(data => {
       this.ordersData = data.reverse();
     });
   }
@@ -149,8 +179,8 @@ export class ConfigrationComponent {
   }
 
   addMenu(searchInput: any, quantityInput: any) {
-    this.menu.id = this.nextMenuId ? this.nextMenuId : 1;
-    const userId = this.currentUserId;
+   // this.menu.id = this.nextMenuId ? this.nextMenuId : 1;
+    const userId = this.currentUser.Id;
     this.backendService.setNewMenu(userId, this.menu)
       .then(response => {
         console.log('Menu added successfully!', response);
@@ -167,7 +197,7 @@ export class ConfigrationComponent {
 
   }
 
-  showMenu(tableId: any,amount:number, index: number) {
+  showMenu(tableId: any, amount: number, index: number) {
     console.log(tableId, "__", index);
     this.ordersDetails.showOrder = tableId;
     this.ordersDetails.totalAmount = amount;
@@ -175,7 +205,7 @@ export class ConfigrationComponent {
 
 
   }
-  closeTab(){
-    this.ordersDetails.showOrder='';
+  closeTab() {
+    this.ordersDetails.showOrder = '';
   }
 }
