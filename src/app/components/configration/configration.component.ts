@@ -121,50 +121,48 @@ export class ConfigrationComponent {
   ngOnInit() {
    
 
-    this.currentUser = JSON.parse(this.cookieService.get('currentUserId'));
-    console.log("loggedInUser", this.currentUser.Id)
+    this.currentUser = JSON.parse(this.cookieService.get('currentUser'));
+    console.log("loggedInUser", this.currentUser.id)
     this.ordersData = new MatTableDataSource<any>(this.ordersData);
     this.ordersData.paginator = this.paginator;
-    this.getAllmenus();
+    this.getAllMenus();
     this.getAllOrders();
    
   }
 
-  async getAllmenus() {
-    // await this.backendService.getMenus().then(data => {
-    //   this.dataSource.data = data;
-    //   this.nextMenuId = Number(data[data.length - 1].id) + 1
-    //   console.log("test", this.allMenuList)
-    // });
-    await this.backendService.getMenusByUser(this.currentUser.Id).then((data => {
-     // this.dataSource.data = data;
-      try{
-        const temp:any[] =[]
-        if(data.length > 0){
-          data.forEach((e:any, i:any) => {
-            e.id = i+1;
-            temp.push(e);
-          });
-          this.dataSource.data = temp;
-          this.nextMenuId = Number(data[data.length - 1].id) + 1
-          console.log('specificData', data)
+  getAllMenus(): void {
+    this.backendService.getMenusByUser(this.currentUser.id).subscribe({
+      next: (data) => {
+        try {
+          const temp: any[] = [];
+          if (data.length > 0) {
+            data.forEach((e: any, i: number) => {
+              e.id = i + 1; // Assign sequential IDs
+              temp.push(e);
+            });
+            this.dataSource.data = temp; // Update the dataSource
+            this.nextMenuId = Number(data[data.length - 1].id) + 1; // Determine the next menu ID
+            console.log('specificData', data);
+          } else {
+            throw new Error('No menus available');
+          }
+        } catch (error) {
+          alert("No Menu added");
         }
-        else{
-          throw Error
-        }
-      }catch{
-        alert("No Menu added")
+      },
+      error: (err) => {
+        console.error('Error fetching menus:', err);
+        alert('An error occurred while fetching menus.');
       }
-      
-   
-    }
-    ))
+    });
   }
+  
 
   async getAllOrders() {
-    await this.backendService.getOrderByUser(this.currentUser.Id).then(data => {
+    await this.backendService.getOrderByUser(this.currentUser.id).subscribe({ 
+      next: (data) => {
       this.ordersData = data.reverse();
-    });
+    }});
   }
   back(e: any) {
     this.router.navigate(['/dashboard']);
@@ -178,18 +176,22 @@ export class ConfigrationComponent {
     this.menu.price = quantityInput.value;
   }
 
-  addMenu(searchInput: any, quantityInput: any) {
-   // this.menu.id = this.nextMenuId ? this.nextMenuId : 1;
-    const userId = this.currentUser.Id;
-    this.backendService.setNewMenu(userId, this.menu)
-      .then(response => {
+  addMenu(searchInput: any, quantityInput: any): void {
+    const userId = this.currentUser.id;
+    this.backendService.setNewMenu(userId, this.menu).subscribe({
+      next: (response) => {
         console.log('Menu added successfully!', response);
-        this.getAllmenus();
-      })
-      .catch(error => {
+        this.getAllMenus(); // Refresh the menu list after adding
+      },
+      error: (error) => {
         console.error('Error adding menu:', error);
-      })
-    console.log("all Menus", this.menu);
+        alert('An error occurred while adding the menu.');
+      }
+    });
+  
+    console.log("All Menus", this.menu);
+  
+    // Clear input fields after adding the menu
     searchInput.value = '';
     quantityInput.value = '';
   }

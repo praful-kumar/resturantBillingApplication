@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
@@ -28,7 +28,7 @@ import { ConfigrationComponent } from './components/configration/configration.co
 import { NgxPrintModule } from 'ngx-print';
 import {CookieService} from 'ngx-cookie-service';
 import {MatPaginatorModule} from '@angular/material/paginator';
-
+import { HttpInterceptorService } from './service/http.interceptor';
 
 @NgModule({
   declarations: [
@@ -66,7 +66,11 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     MatPaginatorModule
     
   ],
-  providers: [DatePipe,CookieService],
+  providers: [DatePipe,CookieService, {
+    provide: HTTP_INTERCEPTORS,
+    useClass: HttpInterceptorService,
+    multi: true, // Support multiple interceptors
+  },],
   bootstrap: [AppComponent]
 })
 

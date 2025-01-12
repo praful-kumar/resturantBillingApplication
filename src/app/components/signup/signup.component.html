@@ -21,9 +21,9 @@
   
         <mat-form-field appearance="fill" class="full-width">
           <mat-label>Password</mat-label>
-          <input matInput type="password" formControlName="password" (input)="onPasswordChange($event)" placeholder="Enter your password">
+          <input matInput type="password" minlength="4" formControlName="password" (input)="onPasswordChange($event)" placeholder="Enter your password">
         </mat-form-field>
-        <button mat-raised-button style="width: 100px;" color="primary" (click)="register()">Register</button>
+        <button mat-raised-button style="width: 100px;" color="primary" [disabled]="form.get('email')?.invalid || form.get('password')?.invalid" (click)="register()">Register</button>
       </form>
       <p style="margin-top: 5px;">Already have an account? <a routerLink="/login">login</a></p>
     </mat-card-content>

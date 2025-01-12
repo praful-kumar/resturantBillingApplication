@@ -25,7 +25,7 @@ export class MainDashboardComponent {
   ngOnInit() {
 
     
-    const loggedInUser=JSON.parse(this.cookieService.get('currentUserId'));
+    const loggedInUser=JSON.parse(this.cookieService.get('currentUser'));
     this.sharedService.setData(loggedInUser);
     console.log(loggedInUser)
     this.username = this.extractUsername(loggedInUser.email);

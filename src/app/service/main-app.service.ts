@@ -1,110 +1,122 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable, catchError, tap, throwError } from 'rxjs';
-import {CookieService} from 'ngx-cookie-service'
+import { Observable, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BackendService {
-  //  private baseUrl = 'http://localhost:9092';
-     private baseUrl =  'https://restaurant-billing-production.up.railway.app';
+  private baseUrl = 'http://localhost:9092';
   userLocation: { latitude: number; longitude: number } | null = null;
 
+  constructor(private http: HttpClient, private cookieService: CookieService) {}
+
+  private userDetails: any = null;
+  // Check if user is logged in using auth token from cookies
+  isLoggedIn(): boolean {
+    return !!this.cookieService.get('authToken');
+  }  
   isAuthenticated = false;
 
-  constructor(private http: HttpClient, private cookieService:CookieService) {}
-
-  // login(data: any): Observable<any> {
-  //   return this.http.post(`${this.baseUrl}/api/users/signin`, data);
-  // }
-  //for routes protection
-  isLoggedIn() {
-    return  !!this.cookieService.get('authToken');
-  }
-
+  // Login API
   login(data: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/api/users/signin`, data).pipe(
       tap(() => {
-        // Set isAuthenticated to true upon successful login
-        const authToken = 'exampleAuthToken'; // Replace this with your actual token
-        this.cookieService.set('authToken', authToken, { expires: 2, sameSite: 'Strict' });
+        // Actions to be taken on successful login
       }),
-      catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          // Handle unauthorized access here, e.g., redirect to login page or show an error message
-          console.error('Unauthorized access',error.error.error);
-        }
-        return throwError(() => error);
-      })
+      catchError(this.handleError)
     );
   }
-  // signUp(data: any): Observable<any> {
-  //   return this.http.post(`${this.baseUrl}/signup`, data);
-  // }
 
-  async signUp(data: any): Promise<any> {
-    try {
-      const response = await this.http.post(`${this.baseUrl}/api/users/register`, data).toPromise();
-      return response;
-    } catch (error) {
-      if (error instanceof HttpErrorResponse && error.status === 401) {
-        throw  error.error;
-      }
-      // Handle error (e.g., log, throw, etc.)
-      throw  error;
-    }
+
+
+  // Sign-up API
+  signUp(data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/api/users/register`, data).pipe(
+      catchError(this.handleError)
+    );
   }
 
+  // Save a new menu
+  setNewMenu(userId: any, data: any): Observable<any> {
+    const token = this.cookieService.get('authToken'); // Replace this with your token fetching logic
+   const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post(`${this.baseUrl}/api/menu/saveMenu?userId=${userId}`, data).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Fetch all menus
+  getMenus(): Observable<any> {
+    const token = this.cookieService.get('authToken'); // Retrieve token dynamically
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get(`${this.baseUrl}/api/menu/getAllMenu`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Fetch menus by user ID
+  getMenusByUser(userId: any): Observable<any> {
+    const token = this.cookieService.get('authToken'); // Fetch token from cookies
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get(`${this.baseUrl}/api/menu/user/${userId}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Fetch orders by user ID with Authorization token
+  getOrderByUser(userId: any): Observable<any> {
+    const token = this.cookieService.get('authToken'); // Fetch token from cookies
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get(`${this.baseUrl}/api/orders/getOrders/user/${userId}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Store orders
+  storeOrders(orderDetails: any, userId: any): Observable<any> {
+    const token = this.cookieService.get('authToken'); // Fetch token from cookies
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.post(`${this.baseUrl}/api/orders/storeOrders?userId=${userId}`, orderDetails).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Fetch all orders
+  getOrders(): Observable<any> {
+    const token = this.cookieService.get('authToken'); // Fetch token from cookies
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.get(`${this.baseUrl}/api/orders/getOrders`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  // Set user location
   setUserLocation(latitude: number, longitude: number): void {
     this.userLocation = { latitude, longitude };
   }
 
-  getUserLocation(): { latitude: number, longitude: number } | null {
+  // Get user location
+  getUserLocation(): { latitude: number; longitude: number } | null {
     return this.userLocation;
   }
 
- async setNewMenu(userId:any,data:any){
-  const response = await this.http.post(`${this.baseUrl}/api/menu/saveMenu?userId=${userId}`, data).toPromise();
-  return response;
+  // Error handler for HTTP requests
+  private handleError(error: HttpErrorResponse): Observable<never> {
+   
+    let errorMessage = 'An unknown error occurred';
+    if (error.error instanceof ErrorEvent) {
+      // Client-side error
+      errorMessage = `Client-side error: ${error.error.message}`;
+    } else {
+      // Server-side error
+      errorMessage = `Server-side error: ${error.message}`;
+
+    }
+    console.error(errorMessage);
+    return throwError(() => error);
   }
-
-  async getMenus(): Promise<any> {
-    return await this.http.get(`${this.baseUrl}/api/menu/getAllMenu`).toPromise();
-  }
-
-  async getMenusByUser(userId:any): Promise<any> {
-    return await this.http.get(`${this.baseUrl}/api/menu/user/${userId}`).toPromise();
-  }
-
-  async getOrderByUser(userId:any): Promise<any> {
-    return await this.http.get(`${this.baseUrl}/api/orders/getOrders/user/${userId}`).toPromise();
-  }
-
-
-
-  async storeOders(orderDetails:any, userId:any):Promise<any> {
-
-
-    return await this.http.post(`${this.baseUrl}/api/orders/storeOrders?userId=${userId}`,orderDetails ).toPromise();
-  }
-
-  async getOrders(): Promise<any> {
-    console.log("best")
-    return await this.http.get(`${this.baseUrl}/api/orders/getOrders`).toPromise();
-  }
-
-  // fetchData() {
-  //   const headers = new HttpHeaders({
-  //     'X-RapidAPI-Key': 'efbfd7d56emsha6167adf120a2edp1c0d94jsncd24a45d9b1a',
-  //     'X-RapidAPI-Host': 'menu-restaurnt.p.rapidapi.com',
-  //     'Access-Control-Allow-Credentials': 'true',
-  //     'Access-Control-Allow-Origin': '*',
-  //     'Cache-Control': 'no-cache, no-store'
-  //   });
-
-  //   return this.http.get('https://menu-restaurnt.p.rapidapi.com/', { headers });
-  // }
-
-
 }
+

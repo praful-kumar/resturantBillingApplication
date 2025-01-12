@@ -104,13 +104,13 @@ export class TableViewComponent {
   ngOnInit() {
     // Retrieving data
     this.tableDetails = JSON.parse(localStorage.getItem('unbilled_data') || '[]');
-    this.currentUser = JSON.parse(this.cookieService.get('currentUserId'));
+    this.currentUser = JSON.parse(this.cookieService.get('currentUser'));
     console.log("loggedInUser", this.currentUser);
     this.getAllMenus();
   }
 
   async getAllMenus() {
-    await this.backendService.getMenusByUser(this.currentUser.Id).then(data => {
+    await this.backendService.getMenusByUser(this.currentUser.id).subscribe(data => {
       // Process the received data here
       try{
         if(data.length > 0){          
@@ -312,9 +312,15 @@ export class TableViewComponent {
       discount: this.discountPercent,
       amount: this.discountPrice
     }
-    this.backendService.storeOders(dbSchema, this.currentUser.Id).then(response => {
-      console.log("test", response);
-    })
+    this.backendService.storeOrders(dbSchema, this.currentUser.id).subscribe({
+      next: (response) => {
+        console.log("Order stored successfully!", response);
+      },
+      error: (error) => {
+        console.error("Error storing order:", error);
+
+      }
+    });
     console.log("syncData", dbSchema)
   }
 

@@ -3,16 +3,17 @@
     <button mat-raised-button style="width: 100px; top: 20px; right: 50px; z-index: 2;  position: absolute;" color="warn"
     (click)="back('dashboard')">Back</button>
     <div class="left-side">
+
+        
         <mat-card class="mat-cards">
 
             <!-- <mat-card-content
                 style="text-align:center; font-size: 15px; font-family: Arial, Helvetica, sans-serif; color: white;">
                  Orders </mat-card-content> -->
-
-                 <mat-card-header class="">
-                    <h2>Ordered Item </h2> 
-                </mat-card-header>
-
+                
+                <mat-card-content class="" style="text-align:center; font-size: 15px; font-family: Arial, Helvetica, sans-serif; color: white;" >
+                    <h3>Order History</h3>
+                </mat-card-content>
                  <mat-card-content>
                     <!-- <div class="orderList"> -->
                         <div class="order-main" *ngFor="let order of ordersData; let i = index">
@@ -67,7 +68,7 @@
         </div> -->
         <mat-card *ngIf="ordersDetails.showOrder" style="width: 90%; position: absolute;"> 
             <mat-card-header class="mb-flex">
-                <h2>Ordered Item </h2> 
+                <h2 style="text-align: center; color: white;">Ordered Item </h2> 
                 <mat-icon (click)="closeTab()">clear</mat-icon>
             </mat-card-header>
             <mat-card-content>

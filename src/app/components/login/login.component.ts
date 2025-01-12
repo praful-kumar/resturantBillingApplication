@@ -20,7 +20,7 @@ export class LoginComponent {
   email: any;
   location: any;
   response: any = '';
-  errorMessage: any;
+  errorMessage: any ={};
   constructor(private backendService: BackendService,
      private formBuilder: FormBuilder,private router: Router,
      private sharedService:SharedService,
@@ -48,48 +48,85 @@ export class LoginComponent {
 
   createForm() {
     this.form = this.formBuilder.group({
-      password: ['', Validators.required],
+      password: ['', Validators.required, Validators.minLength(4)],
       email: ['', [Validators.required, Validators.email]]
     });
   }
 
   login() {
-    const userData = { "email": this.email };
-    this.backendService.login(userData)
-      .subscribe(
-        response => {
-                    console.log("responseUser",response)
-          // Compare the hashed password from the server with the password entered by the user
-          const isPasswordValid = compareSync(this.password, response.hashedPassword);
-          if (isPasswordValid) {
-            // Save user details in localStorage or session storage
-            delete response.hashedPassword;
-            this.cookieService.set('currentUserId', JSON.stringify(response),{expires:1,sameSite:'Strict'});
-             // Redirect or perform other actions
+    const userData = { email: this.email, password: this.password };
+  
+    this.backendService.login(userData).subscribe({
+      next: (response) => {
+        console.log('Login Response:', response);
+  
+        if (response.status === 'success') {
+          console.log('Login successful!');
+          
+          // Extract the token and user details from the response
+          const authToken = response.token;
+          const user = response.user;
+  
+          // Save the authentication token in cookies
+          this.cookieService.set('authToken', authToken, {
+            expires: 2, // Expires in 2 days
+            sameSite: 'Strict',
+          });
+  
+          // Save user data in cookies
+          this.cookieService.set('currentUser', JSON.stringify(user), {
+            expires: 1, // Expires in 1 day
+            sameSite: 'Strict',
+          });
+  
+          // Redirect to the dashboard
           this.router.navigate(['/dashboard']);
-          this.getLocation();
-          // Handle successful login response
-          console.log('Logged in successfully!', response);
-          this.sharedService.setData(response);
-          //Get user location if logged in
-          console.log("User", this.locationData);
-          }else{
-            throw Error;
-          }
-         
-     
-        },
-        error => {
-          // Handle login error
-          // Display error message or perform other actions
-          this.errorMessage = error.error;
-          //time out to claer error message
+  
+          // Share user data globally using shared service
+          this.sharedService.setData(user);
+  
+          console.log('User details saved:', user);
+        } else {
+          // Handle unexpected responses
+          this.setErrorMessage('Unexpected error occurred. Please try again.');
+          console.error('Unexpected login response:', response);
+  
           setTimeout(() => {
-            this.errorMessage = '';
+            this.clearErrorMessage();
           }, 3500);
         }
-      );
+      },
+      error: (error) => {
+        console.log('API Error:', error);
+  
+        // Handle errors returned from the API
+        const errorMsg = error.error?.message || 'An unknown error occurred.';
+        this.setErrorMessage('Login failed. ' + errorMsg);
+  
+        // Clear the error message after a timeout
+        setTimeout(() => {
+          this.clearErrorMessage();
+        }, 3500);
+      },
+    });
   }
+
+
+  // Helper to set error messages
+setErrorMessage(message: string) {
+  if (!this.errorMessage) {
+    this.errorMessage = { error: '' };
+  }
+  this.errorMessage.error = message;
+}
+
+// Helper to clear error messages
+clearErrorMessage() {
+  if (this.errorMessage) {
+    this.errorMessage.error = '';
+  }
+}
+
 
   getLocation() {
     let locationData: { latitude: number, longitude: number, accuracy: number } | null = null;
