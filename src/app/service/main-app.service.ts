@@ -8,7 +8,7 @@ import { CookieService } from 'ngx-cookie-service';
   providedIn: 'root'
 })
 export class BackendService {
-  private baseUrl = 'http://localhost:9092';
+  private baseUrl = 'https://restaurant-billing-praful321997-dev.apps.rm3.7wse.p1.openshiftapps.com';
   userLocation: { latitude: number; longitude: number } | null = null;
 
   constructor(private http: HttpClient, private cookieService: CookieService) {}
