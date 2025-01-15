@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatAutocomplete, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
 import { DatePipe } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service'
 
@@ -20,12 +20,15 @@ export class TableViewComponent {
   @ViewChild('tableRstoredDataef')
   tableElement!: ElementRef<HTMLTableElement>;
 
+  @ViewChild(MatAutocompleteTrigger) autocompleteTrigger: MatAutocompleteTrigger | undefined;
+  @ViewChild('nextInput') nextInput: ElementRef<HTMLInputElement> | undefined; // Reference to the next input (quantity)
+
   searchControl = new FormControl();
   filteredSuggestions: Observable<string[]>;
   constructor(private backendService: BackendService, private router: Router, private datepipe: DatePipe,
     //private sharedService:SharedService,public print: NgxPrintElementService
     private printService: NgxPrintService, private el: ElementRef, private cookieService: CookieService
-
+   
   ) {
     this.filteredSuggestions = this.searchControl.valueChanges.pipe(
       startWith(''),
@@ -153,6 +156,8 @@ export class TableViewComponent {
     this.filteredMenus = this._filterSuggestions(e.value)
   }
 
+ 
+
   private _filterSuggestions(value: string): any[] {
     const filterValue = value.toLowerCase();
     return this.menus.filter(menu => {
@@ -163,13 +168,31 @@ export class TableViewComponent {
       return menuName.includes(filterValue) || menuId.includes(filterValue);
     });
   }
+
+  onEnterPress() {
+    // Insert the selected value into the search input field
+    if (this.selectedMenuItem) {
+      // if (this.searchInput) {
+      //   this.searchInput?.nativeElement.value = this.selectedMenu; // Set the input field to the selected menu
+      // }
+    
+
+    // Move focus to the next input field (quantity)
+    if (this.nextInput) {
+      this.nextInput.nativeElement.focus(); // Focus on the next input field
+    }
+    // this.selectedMenuItem= '';
+  }
+  }
+  
   selectedMenuItem: any;
   onOptionSelected(e: MatAutocompleteSelectedEvent) {
     const selectedMenuName = e.option.value;
     this.selectedMenuItem = this.filteredMenus.find((menu: any) => menu.name === selectedMenuName);
   }
   onKeyQuantity(quantityInput: any) {
-    this.quantity = parseInt(quantityInput.value);
+    this.quantity = parseInt(quantityInput.value);    
+    
   }
   addMenu(searchInput: any, quantityInput: any) {
     if (this.quantity && this.selectedMenuItem) {
@@ -178,6 +201,7 @@ export class TableViewComponent {
       quantityInput.value = '';
       this.filteredMenus = [];
     }
+    
   }
 
 
@@ -192,6 +216,7 @@ export class TableViewComponent {
         this.dataSource.data = this.dataSource.data.filter((dataItem: any) => dataItem.id !== item.id); // Remove item from dataSource
       }
     }
+    this.calcTotalPrice();
   }
 
 
@@ -301,10 +326,6 @@ export class TableViewComponent {
   syncOrdertoDB(tableId: any) {
     let syncData = this.getMenusforTable(tableId);
     const now = Date.now();
-
-    // const userId = localStorage.getItem('currentUserId')
-    //'663261866e6eab17243aa7f9';
-    // const userId = this.currentUser.Id;
     let dbSchema = {
       currentDateAndTime: this.datepipe.transform(now, 'dd/MM/yyyy h:mm a'),
       menu: syncData.menus,

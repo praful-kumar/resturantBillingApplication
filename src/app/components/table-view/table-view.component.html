@@ -63,7 +63,7 @@
                 <mat-form-field style="width: 350px;">
                     <mat-label>Search Menu</mat-label>
                     <input #searchInput placeholder="Search Menu" type="text" matInput [matAutocomplete]="auto"
-                        (keyup)="onKey($event.target)" [disabled]="!selectedTable">
+                        (keyup)="onKey($event.target)" [disabled]="!selectedTable" (keydown.enter)="onEnterPress()" >
                     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)">
                         <mat-option *ngFor="let menu of filteredMenus" [value]="menu.name">
                             {{ menu.name }} || Price:{{ menu.price }}
@@ -72,8 +72,8 @@
                 </mat-form-field>
                 <mat-form-field style="width: 90px;">
                     <mat-label>Quantity</mat-label>
-                    <input #quantityInput placeholder="Quantity" type="number" matInput (keyup)="onKeyQuantity($event.target)"
-                        [disabled]="!selectedTable">
+                    <input #nextInput #quantityInput placeholder="Quantity" type="number" matInput (keyup)="onKeyQuantity($event.target)"
+                    (keydown.enter)="addMenu(searchInput,quantityInput)"  [disabled]="!selectedTable">
                 </mat-form-field>
                 <button style="height: 55px; margin-bottom:20px; border: 1px solid #673AB7;" mat-raised-button color="primary"
                  [disabled]="!quantity" (click)="addMenu(searchInput,quantityInput)">Add</button>
